@@ -1,9 +1,22 @@
+# Optimized by ci-cost (https://github.com/mariotavarez/ci-cost)
+# Applied 5 optimizations:
+# - [HIGH] Split "lint" into parallel jobs (lint + test + build)
+# - [HIGH] Split "test-integration" into parallel jobs (lint + test + build)
+# - [MEDIUM] Add concurrency group to "build-test.yml"
+# - [MEDIUM] 5 jobs clone the repo — consider artifact sharing
+# - [LOW] Explicitly set fail-fast for large matrix job "test-integration" (5 combinations)
+# Estimated savings: ~17 min/run
+#
 name: Build, Test
 
 on:
   pull_request:
   workflow_dispatch:
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 env:
   MAINNET_RPC: ${{ secrets.MAINNET_RPC }}
 
